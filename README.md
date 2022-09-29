@@ -11,7 +11,7 @@ Loads of docs on this, but in its simplest form, it is a configuration managemen
 
 ## Installing the Ansible Controller
 
-The Ansible controller (where all the commands are run from) must be installed on a Linux-based machine. We will install into a python virtual environment within a VMware VM running Ubuntu Desktop 22.04 to keep things isolated.
+The Ansible controller (where all the commands are run from) must be installed on a Linux-based machine. We will install into a python virtual environment to keep things isolated.
 
 > _**Note**: For Windows users, Ansible can be installed in [WSL (Windows Subsystem for Linux)](https://learn.microsoft.com/en-us/windows/wsl/install)_
 
