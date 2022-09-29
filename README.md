@@ -27,7 +27,7 @@ The Ansible controller (where all the commands are run from) must be installed o
     ```
 1. Create a virtual enviornment called `ansible`
     ```shell
-    python3 -m venv ~/venvs/ansible`
+    python3 -m venv ~/venvs/ansible
     ```
 1. Source the newly-created virtual environment
     ```shell
