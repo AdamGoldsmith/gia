@@ -1,0 +1,6 @@
+ansible
+ansible-lint
+molecule
+netaddr
+pyaml
+

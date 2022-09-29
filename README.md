@@ -37,10 +37,11 @@ The Ansible controller (where all the commands are run from) must be installed o
     ```shell
     pip install pip --upgrade
     ```
-1. Populate `requirements.txt`
+1. Populate `requirements.txt` (or use repo-supplied file)
     ```shell
     echo "ansible
     ansible-lint
+    molecule
     netaddr
     pyaml" > ~/venvs/requirements.txt
     ```
