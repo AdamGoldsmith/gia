@@ -1,0 +1,16 @@
+---
+
+- name: Prepare CloudInit configuration
+  hosts: localhost
+  gather_facts: no
+  tags:
+    - localhost
+    - localhost_cloudinit
+
+  tasks:
+
+    - name: Create CloudInit config
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/../../templates/cloud_init.yml.j2"
+        dest: "{{ playbook_dir }}/../../../terraform/config/cloud_init.yml"
+        mode: "0664"
