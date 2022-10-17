@@ -1,6 +1,6 @@
-ansible
-ansible-lint
-molecule
+ansible-core==2.13.4
+ansible==6.4.0
+ansible-lint==6.7.0
+molecule==4.0.1
 netaddr
 pyaml
-

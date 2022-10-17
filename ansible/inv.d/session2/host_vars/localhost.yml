@@ -1,5 +1,6 @@
+---
 vm_ansible_user: ansible
-vm_ssh_key_path: "{{ playbook_dir }}/../../ssh_keys/id_{{ vm_ansible_user }}"
+vm_ssh_key_path: "{{ inventory_dir }}/../../ssh_keys/id_{{ vm_ansible_user }}"
 vm_ssh_key_type: ed25519
 vm_ssh_comment: ansible-vm-key
 vm_root_pw: t0psecret

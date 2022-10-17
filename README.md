@@ -2,13 +2,15 @@
 
 Tutorial for getting started with Ansible
 
+[Google Slides Presentation](https://docs.google.com/presentation/d/1fnMS3VxOudrA15qwDTQke1pFauohJyUHyLjIuDcitpE/edit?usp=sharing)
+
 ## Ansible background
 
 ![alt text](images/Ansible.png "Ansible Logo")
 
 ### What is Ansible?
 
-Loads of docs on this, but in its simplest form, it is a configuration management tool written in python.
+Loads of docs on this, but in its simplest form, it is a configuration management tool written in python by Michael DeHaan in 2012.
 
 ### Why use Ansible?
 
@@ -35,20 +37,32 @@ Ansible controller executes tasks simultaneously to multiple, targeted hosts, us
 
 We will be using LXC/LXD, which is a lightweight container/VM orchestration tool, for our Ansible tutorial environment
 
-LXC Container | Image                        | Purpose
---------------|------------------------------|--------
-GIA (host)    | Ubuntu 22.04                 | Ansible Controller
-lion          | ubuntu:22.04                 | Ansible Target
-tiger         | images:debian/bookworm/cloud | Ansible Target
-shark         | images:alpine/3.16/cloud     | Ansible Target
+LXC Container     | Image                        | Purpose
+------------------|------------------------------|--------
+GIA (host)        | n/a                          | Ansible Controller
+ansible-target-01 | ubuntu:22.04                 | Ansible Target
+ansible-target-02 | images:opensuse/15.4/cloud   | Ansible Target
+ansible-target-03 | images:almalinux/8/cloud     | Ansible Target
 
-## Installing the Ansible Controller
+## Ansible concepts
+
+* Targets
+* Inventories
+* Adhoc commands
+* Playbooks
+* Facts
+* Configuration settings
+* Ansible Vault
+
+## Tutorials
+
+![alt text](images/Bash.png "Bash Logo")
+
+### Installing the Ansible Controller
 
 The Ansible controller (where all the commands are run from) must be installed on a Linux-based machine. We will install into a python virtual environment to keep things isolated.
 
 > _**Note**: For Windows users, Ansible can be installed in [WSL (Windows Subsystem for Linux)](https://learn.microsoft.com/en-us/windows/wsl/install)_
-
-![alt text](images/Bash.png "Bash Logo")
 
 1. Install python virtual environment software
     ```bash
@@ -70,7 +84,7 @@ The Ansible controller (where all the commands are run from) must be installed o
     ```bash
     pip install pip --upgrade
     ```
-1. Populate `requirements.txt` (or use repo-supplied file)
+1. Populate `requirements.txt` (or use [repo-supplied file](requirements.txt) for pinned versions)
     ```bash
     echo "ansible
     ansible-lint
@@ -85,62 +99,4 @@ The Ansible controller (where all the commands are run from) must be installed o
 1. Test Ansible installation
     ```bash
     ansible --version
-    ansible localhost -m ping
     ```
-
-## Ansible concepts
-
-* Targets
-* Inventories
-* Adhoc commands
-* Playbooks
-* Facts
-* Configuration settings
-* Ansible Vault
-
-## Tutorial
-
-We will first use Ansible adhoc commands to create SSH key pairs locally on the Ansible Controller. These will be used to authenticate connections to the Ansible target hosts.
-
-> _**Note**: Ideally these SSH key pairs would be baked into the newly-created LXC containers using something like cloud-init_
-
-1. Login to the Ansible LXC container
-    ```bash
-    lxc exec ansible bash
-    ```
-1. Source the ansible virtual environment
-    ```bash
-    source ~/venvs/ansible/bin/activate
-    ```
-1. Create a local SSH key directory
-    ```bash
-    ansible localhost -m ansible.builtin.file -a "path=ssh_keys state=directory"
-    ```
-1. Create a local SSH key pair
-    ```bash
-    ansible localhost -m community.crypto.openssh_keypair -a "path=ssh_keys/id_ansible type=ed25519"
-    ```
-1. Display the public key
-    ```bash
-    cat ssh_keys/id_ansible.pub
-    ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJqLnVWATu4sF+IoXElAbAX8Pk85ioxnloDdrUjN7YJ0
-    ```
-1. Login to each of the Ansible target hosts (lion, tiger, shark)
-    ```bash
-    lxc exec lion bash
-    ```
-1. Create and configure an Ansible user
-    ```bash
-    useradd -c 'Ansible user' -m ansible
-    mkdir /home/ansible/.ssh
-    chown ansible.ansible /home/ansible/.ssh
-    chmod 0700 /home/ansible/.ssh
-    echo "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJqLnVWATu4sF+IoXElAbAX8Pk85ioxnloDdrUjN7YJ0" > /home/ansible/.ssh/authorized_keys
-    chown ansible.ansible /home/ansible/.ssh/authorized_keys
-    chmod 0600 /home/ansible/.ssh/authorized_keys
-    ```
-1. Exit the target LXC container
-    ```bash
-    exit
-    ```
-
