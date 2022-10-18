@@ -1,0 +1,34 @@
+---
+
+- name: Install traefik software
+  hosts: lb
+  gather_facts: yes
+  become: yes
+  tags:
+    - traefik_install
+
+  tasks:
+
+    - name: Install dependency packages
+      ansible.builtin.package:
+        name:
+          - tar
+          - zip
+          - unzip
+        state: present
+
+    - name: Download traefik zip
+      ansible.builtin.get_url:
+        # SMELLY: Should be parameterised
+        url: https://github.com/traefik/traefik/releases/download/v2.9.1/traefik_v2.9.1_linux_amd64.tar.gz
+        checksum: sha256:562f3c57b6a1fe381e65cd46e6deb0ac6f0ad8f2e277748262814f4c5ef65861
+        dest: /tmp/
+        mode: "0754"
+
+    - name: Unzip traefik code
+      ansible.builtin.unarchive:
+        # SMELLY: Should be parameterised
+        src: /tmp/traefik_v2.9.1_linux_amd64.tar.gz
+        dest: /usr/local/bin
+        remote_src: yes
+        mode: "0755"

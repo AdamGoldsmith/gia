@@ -1,0 +1,8 @@
+---
+
+- name: Manage traefik servers
+  hosts: localhost
+  gather_facts: no
+
+- import_playbook: traefik_install.yml
+- import_playbook: traefik_config.yml

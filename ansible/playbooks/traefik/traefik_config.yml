@@ -1,0 +1,103 @@
+---
+
+- name: Configure traefik server
+  hosts: lb
+  gather_facts: yes
+  become: yes
+  tags:
+    - traefik_config
+
+  # SMELLY: Should be re-written as a role
+  tasks:
+
+    - name: Get traefik pids
+      ansible.builtin.command:
+        cmd: pidof traefik
+      register: traefik_pid
+      changed_when: no
+      failed_when:
+        - traefik_pid.rc != 0
+        - traefik_pid.rc != 1
+
+    - name: Debug traefik-pid
+      debug:
+        var: item
+      loop: "{{ traefik_pid['stdout'].split(' ') }}"
+      when: traefik_pid['stdout'] | default('') | length
+
+    - name: Create traefik directories
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        mode: "0755"
+      loop:
+        # SMELLY: Should be parameterised
+        - /etc/traefik
+        - /etc/traefik/conf.d
+        - /etc/traefik/log
+
+    # SMELLY: Should be templated
+    - name: Copy traefik config file
+      ansible.builtin.copy:
+        content: |
+          ---
+          log:
+            level: DEBUG
+            filepath: "/etc/traefik/log/traefik.log"
+          api:
+            dashboard: true
+            insecure: true
+            debug: true
+          entryPoints:
+            web:
+              address: ":80"
+          providers:
+            file:
+              directory: "/etc/traefik/conf.d"
+              watch: true
+        dest: /etc/traefik/traefik.yml
+      notify: restart traefik
+
+    # SMELLY: Should be templated
+    - name: Copy web server config file
+      ansible.builtin.copy:
+        content: |
+          ---
+          http:
+            routers:
+              nginx:
+                entrypoints:
+                  - "web"
+                rule: Method(`GET`)
+                service: nginx
+            services:
+              nginx:
+                loadBalancer:
+                  servers:
+                    - url: "http://ansible-target-01.lxd:81/"
+                    - url: "http://ansible-target-02.lxd:81/"
+        dest: /etc/traefik/conf.d/nginx.yml
+
+  handlers:
+
+    - name: Get traefik pid
+      ansible.builtin.command:
+        cmd: pidof traefik
+      register: traefik_pid
+      changed_when: no
+      failed_when:
+        - traefik_pid.rc != 0
+        - traefik_pid.rc != 1
+      listen: restart traefik
+
+    - name: Kill traefik
+      ansible.builtin.command:
+        cmd: "kill {{ item }}"
+      loop: "{{ traefik_pid['stdout'].split(' ') }}"
+      when: traefik_pid['stdout'] | default('') | length
+      listen: restart traefik
+
+    - name: Start traefik process
+      ansible.builtin.shell:
+        cmd: nohup /usr/local/bin/traefik --configfile /etc/traefik/traefik.yml </dev/null >/dev/null 2>&1 &
+      listen: restart traefik
