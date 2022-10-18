@@ -1,0 +1,8 @@
+---
+
+- name: Manage web servers
+  hosts: localhost
+  gather_facts: no
+
+- import_playbook: webserver_install.yml
+- import_playbook: webserver_content.yml

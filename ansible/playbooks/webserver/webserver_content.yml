@@ -1,0 +1,72 @@
+---
+
+- name: Manage web server content
+  hosts: web
+  gather_facts: yes
+  become: yes
+  tags:
+    - webserver_content
+
+  # SMELLY: Should be re-written as a role
+  tasks:
+
+    - name: Create web content directory
+      ansible.builtin.file:
+        name: /var/www/demo
+        state: directory
+        mode: "0775"
+
+    - name: Create web content
+      ansible.builtin.copy:
+        # SMELLY: Bad listing out contents here - should be in a template
+        content: |
+          <!doctype html>
+          <html>
+          <head>
+              <meta charset="utf-8">
+              <title>Get Into Ansible</title>
+          </head>
+          <body style="font-family: sans-serif">
+              <h1>Get Into Ansible</h1>
+              <table style="font-family: monospace; color: white; font-weight:bold;">
+                <tr>
+                  <!-- SMELLY: Awful imperative use of ternary here - should be using inventory variables -->
+                  <td style="background-color:{{ (ansible_hostname == 'ansible-target-01') | ternary('blue', 'green') }};">
+                    {{ ansible_hostname }}
+                  </td>
+                </tr>
+              </table>
+          </body>
+          </html>
+        dest: /var/www/demo/index.html
+        mode: "0664"
+
+    - name: Create virtual host
+      ansible.builtin.copy:
+        # SMELLY: Bad listing out contents here - should be in a file
+        content: |
+          server {
+            listen 81;
+            listen [::]:81;
+
+            server_name demo.local.com;
+
+            root /var/www/demo;
+            index index.html;
+
+            location / {
+              try_files $uri $uri/ =404;
+            }
+          }
+        dest: /etc/nginx/sites-enabled/demo
+        mode: "0664"
+      notify: restart nginx
+
+  handlers:
+
+    - name: Restart nginx service
+      ansible.builtin.service:
+        name: nginx
+        state: restarted
+        enabled: yes
+      listen: restart nginx

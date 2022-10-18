@@ -1,6 +1,8 @@
 localhost ansible_connection=local
 [web]
-target-01 ansible_host=10.51.208.210 ansible_ssh_private_key_file=/home/adam/code/gia/ansible/ssh_keys/id_ansible
-target-02 ansible_host=10.51.208.35  ansible_ssh_private_key_file=/home/adam/code/gia/ansible/ssh_keys/id_ansible
+target-01 ansible_host=10.51.208.180 ansible_ssh_private_key_file=/home/adam/code/gia/ansible/ssh_keys/id_ansible
+target-02 ansible_host=10.51.208.26  ansible_ssh_private_key_file=/home/adam/code/gia/ansible/ssh_keys/id_ansible
 [lb]
-target-03 ansible_host=10.51.208.201 ansible_ssh_private_key_file=/home/adam/code/gia/ansible/ssh_keys/id_ansible
+target-03 ansible_host=10.51.208.154 ansible_ssh_private_key_file=/home/adam/code/gia/ansible/ssh_keys/id_ansible
+[spare]
+target-04 ansible_host=10.51.208.73  ansible_ssh_private_key_file=/home/adam/code/gia/ansible/ssh_keys/id_ansible

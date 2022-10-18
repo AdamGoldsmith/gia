@@ -15,11 +15,15 @@ variable "instances" {
     }
     "02" = {
       prefix = "ansible-target-"
-      image  = "images:opensuse/15.4/cloud"
+      image  = "ubuntu:22.04"
     }
     "03" = {
       prefix = "ansible-target-"
       image  = "images:almalinux/8/cloud"
+    }
+    "04" = {
+      prefix = "ansible-target-"
+      image  = "images:opensuse/15.4/cloud"
     }
   }
 }

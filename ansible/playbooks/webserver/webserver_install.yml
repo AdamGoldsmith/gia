@@ -1,0 +1,21 @@
+---
+
+- name: Install web server
+  hosts: web
+  gather_facts: yes
+  become: yes
+  tags:
+    - webserver_install
+
+  tasks:
+
+    - name: Install nginx
+      ansible.builtin.package:
+        name: nginx
+        state: present
+
+    - name: Enable nginx
+      ansible.builtin.service:
+        name: nginx
+        state: started
+        enabled: yes
