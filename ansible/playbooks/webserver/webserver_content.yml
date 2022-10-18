@@ -30,6 +30,7 @@
             <body style="font-family: sans-serif; background-color: {{ (ansible_hostname == 'ansible-target-01') | ternary('blue', 'green') }}; color: white">
               <h1>Get into Ansible</h1>
               <h2>{{ ansible_hostname }}</h2>
+              <button onClick="window.location.reload();" autofocus>Refresh Page</button>
             </body>
           </html>
         dest: /var/www/demo/index.html
