@@ -22,21 +22,15 @@
         content: |
           <!doctype html>
           <html>
-          <head>
+            <head>
               <meta charset="utf-8">
-              <title>Get Into Ansible</title>
-          </head>
-          <body style="font-family: sans-serif">
-              <h1>Get Into Ansible</h1>
-              <table style="font-family: monospace; color: white; font-weight:bold;">
-                <tr>
-                  <!-- SMELLY: Awful imperative use of ternary here - should be using inventory variables -->
-                  <td style="background-color:{{ (ansible_hostname == 'ansible-target-01') | ternary('blue', 'green') }};">
-                    {{ ansible_hostname }}
-                  </td>
-                </tr>
-              </table>
-          </body>
+              <title>Get into Ansible</title>
+            </head>
+            <!-- SMELLY: Awful imperative use of ternary here - should be using inventory variables -->
+            <body style="font-family: sans-serif; background-color: {{ (ansible_hostname == 'ansible-target-01') | ternary('blue', 'green') }}; color: white">
+              <h1>Get into Ansible</h1>
+              <h2>{{ ansible_hostname }}</h2>
+            </body>
           </html>
         dest: /var/www/demo/index.html
         mode: "0664"
