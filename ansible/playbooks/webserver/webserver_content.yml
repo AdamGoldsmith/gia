@@ -10,11 +10,27 @@
   # SMELLY: Should be re-written as a role
   tasks:
 
-    - name: Create web content directory
+    - name: Create web content directories
       ansible.builtin.file:
-        name: /var/www/demo
+        name: "{{ item }}"
         state: directory
         mode: "0775"
+      loop:
+        - /var/www/demo
+        - /var/www/demo/images
+
+    - name: Install dependency packages
+      ansible.builtin.package:
+        name:
+          - tar
+          - zip
+          - unzip
+        state: present
+
+    - name: Copy & extract favicon zip
+      ansible.builtin.unarchive:
+        src: "{{ playbook_dir }}/../../files/favicon_io.zip"
+        dest: /var/www/demo/images
 
     - name: Create web content
       ansible.builtin.copy:
@@ -25,6 +41,10 @@
             <head>
               <meta charset="utf-8">
               <title>Get into Ansible</title>
+              <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+              <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+              <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+              <link rel="manifest" href="/images/site.webmanifest">
             </head>
             <!-- SMELLY: Awful imperative use of ternary here - should be using inventory variables -->
             <body style="font-family: sans-serif; background-color: {{ (ansible_hostname == 'ansible-target-01') | ternary('blue', 'green') }}; color: white">
