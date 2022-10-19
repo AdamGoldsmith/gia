@@ -10,21 +10,6 @@
   # SMELLY: Should be re-written as a role
   tasks:
 
-    - name: Get traefik pids
-      ansible.builtin.command:
-        cmd: pidof traefik
-      register: traefik_pid
-      changed_when: no
-      failed_when:
-        - traefik_pid.rc != 0
-        - traefik_pid.rc != 1
-
-    - name: Debug traefik-pid
-      debug:
-        var: item
-      loop: "{{ traefik_pid['stdout'].split(' ') }}"
-      when: traefik_pid['stdout'] | default('') | length
-
     - name: Create traefik directories
       ansible.builtin.file:
         path: "{{ item }}"
