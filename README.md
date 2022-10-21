@@ -40,10 +40,10 @@ We will be using LXC/LXD, which is a lightweight container/VM orchestration tool
 LXC Container     | Image                      | Purpose
 ------------------|----------------------------|--------
 GIA (host)        | n/a                        | Ansible Controller
-ansible-target-01 | ubuntu:22.04               | Ansible Target
-ansible-target-02 | ubuntu:22.04               | Ansible Target
-ansible-target-03 | images:almalinux/8/cloud   | Ansible Target
-ansible-target-04 | images:opensuse/15.4/cloud | Ansible Target
+ansible-target-01 | ubuntu:22.04               | Web Server
+ansible-target-02 | ubuntu:22.04               | Web Server
+ansible-target-03 | images:almalinux/8/cloud   | Load Balancer
+ansible-target-04 | images:opensuse/15.4/cloud | Spare
 
 ## Ansible concepts
 
